@@ -51,6 +51,7 @@
                     </div>
                 @endif
             </div>
+            <div class="mt-3 mb-3">{{ $userPosts->links() }}</div>
         </div>
     </div>
 </x-app-layout>

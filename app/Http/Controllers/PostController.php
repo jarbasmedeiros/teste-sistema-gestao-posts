@@ -26,7 +26,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $userPosts = $this->user->findOrFail(Auth::id())->posts;
+        $userPosts = $this->user->findOrFail(Auth::id())->posts()->paginate(6);
 
         return view('dashboard', ['userPosts' => $userPosts]);
     }
