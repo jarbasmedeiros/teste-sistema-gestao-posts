@@ -33,9 +33,11 @@ class PostRequest extends FormRequest
     public function messages()
     {
         return [
-            'required' => 'o campo :attribute é obrigatório',
-            'min' => 'O campo :attribute deve ter no mínimo :min caracteres',
-            'url' => 'O endereço da :attribute deve ser válido'
+            'title.required' => 'O :attribute é obrigatório.',
+            'description.required' => 'A :attribute é obrigatória.',
+            'title.required' => 'O :attribute é obrigatório.',
+            'description.min' => 'A :attribute deve possuir no mínimo 10 caracteres.',
+            'image_url.required' => 'A url da :attribute é inválida.'
         ];
     }
 

@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\PostRequest;
+use App\Models\User;
+use App\Http\Requests\PostRequest;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     private $post;
+    private $user;
 
-    public function __construct(Post $post)
+    public function __construct(Post $post, User $user)
     {
         $this->post = $post;
+        $this->user = $user;
     }
     /**
      * Display a listing of the resource.
@@ -20,9 +25,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = $this->post->latest()->paginate(10);
+        $userPosts = $this->user->findOrFail(Auth::id())->posts;
 
-        return view('index', compact('posts'));
+        return view('dashboard', ['userPosts' => $userPosts]);
     }
 
     /**
@@ -32,7 +37,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('create');
+        return view('posts.create');
     }
 
     /**
@@ -43,10 +48,15 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        $user = Auth::user();
-        $user->posts()->create($request->validated());
+        try {
+            $user = $this->user->findOrFail(Auth::id());
+            $user->posts()->create($request->validated());
 
-        return redirect()->route('index');
+            return redirect()->route('posts.index');
+            
+        } catch (Exception $exception) {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -68,21 +78,29 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = $this->post->findOrFail($product);
+        $post = $this->post->findOrFail($id);
 
-        return view('edit', compact('post'));
+        return view('posts.edit', compact('post'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\PostRequest  $request
-     * @param  $i
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
     public function update(PostRequest $request, $id)
     {
-        //
+        try {
+            $post = $this->post->findOrFail($id);
+            $post->update($request->validated());
+
+            return redirect()->route('posts.index');
+
+        } catch (Exception $exception) {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -93,6 +111,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = $this->post->findOrFail($id);
+        $post->delete();
+
+        return redirect()->back();
     }
 }
