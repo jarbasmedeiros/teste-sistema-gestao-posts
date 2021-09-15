@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use App\Http\Requests\PostRequest;
+use App\Notifications\PostCreated;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,7 +51,9 @@ class PostController extends Controller
     {
         try {
             $user = $this->user->findOrFail(Auth::id());
-            $user->posts()->create($request->validated());
+            $post = $user->posts()->create($request->validated());
+
+            $user->notify(new PostCreated($post));
 
             return redirect()->route('posts.index')->with('success','Post cadastrado com sucesso!');
 
