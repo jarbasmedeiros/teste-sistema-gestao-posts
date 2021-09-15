@@ -52,10 +52,10 @@ class PostController extends Controller
             $user = $this->user->findOrFail(Auth::id());
             $user->posts()->create($request->validated());
 
-            return redirect()->route('posts.index');
-            
+            return redirect()->route('posts.index')->with('success','Post cadastrado com sucesso!');
+
         } catch (Exception $exception) {
-            return redirect()->back();
+            return redirect()->back()->with('error', 'Desculpa!, não foi possível cadastrar o post!');
         }
     }
 
@@ -96,10 +96,10 @@ class PostController extends Controller
             $post = $this->post->findOrFail($id);
             $post->update($request->validated());
 
-            return redirect()->route('posts.index');
+            return redirect()->route('posts.index')->with('success','Post atualizado com sucesso!');
 
         } catch (Exception $exception) {
-            return redirect()->back();
+            return redirect()->route('posts.index')->with('error', 'Desculpa!, não foi possível atualizar o post!');
         }
     }
 
@@ -114,6 +114,6 @@ class PostController extends Controller
         $post = $this->post->findOrFail($id);
         $post->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success','Post removido com sucesso!');
     }
 }

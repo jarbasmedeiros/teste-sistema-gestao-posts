@@ -6,6 +6,17 @@
                         <a href="{{ route('posts.create') }}" class="btn btn-primary btn-sm" style="float: right;">Novo
                             Post</a>
             </div>
+            <div id="alert" class="m-2 mt-3">
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @elseif (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+            </div>
             <div class="row">
                 @if ($userPosts)
                     @foreach ($userPosts as $post)
