@@ -24,3 +24,7 @@ require __DIR__.'/auth.php';
  *  Post Routes
  */
 Route::resource('posts', PostController::class);
+
+Route::fallback(function() {
+    return "<h1>Opss.. URL não encontrada!</h1>";
+});
